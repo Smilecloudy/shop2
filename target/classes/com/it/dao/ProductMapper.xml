@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.it.dao.ProductMapper">
+
+<!--    //获取最热门商品-->
+<!--    public List<Product> findHotProduct();-->
+    <select id="findHotProduct" resultMap="findHotProductResultMap">
+        SELECT * FROM tab_product INNER JOIN tab_category
+        ON tab_product.`cid` = tab_category.`cid`
+        WHERE is_hot = 1 AND pflag = 1
+        ORDER BY pid ASC LIMIT 0 , 12;
+    </select>
+    <resultMap id="findHotProductResultMap" type="product">
+        <result property="pid" column="pid"/>
+        <result property="pname" column="pname"/>
+        <result property="market_price" column="market_price"/>
+        <result property="shop_price" column="shop_price"/>
+        <result property="pimage" column="pimage"/>
+        <result property="pdate" column="pdate"/>
+        <result property="is_hot" column="is_hot"/>
+        <result property="pdesc" column="pdesc"/>
+        <result property="pflag" column="pflag"/>
+        <association property="category" javaType="category">
+            <result property="cid" column="cid"/>
+            <result property="cname" column="cname"/>
+        </association>
+    </resultMap>
+
+<!--    //Get the most newest products through ajax request.-->
+<!--    public List<Product> findNewProduct();-->
+    <select id="findNewProduct" resultMap="findNewProductResultMap">
+        SELECT * FROM tab_product INNER JOIN tab_category
+        ON tab_product.`cid` = tab_category.`cid`
+        WHERE pflag = 1 ORDER BY pdate ASC LIMIT 0 , 12;
+    </select>
+    <resultMap id="findNewProductResultMap" type="product">
+        <result property="pid" column="pid"/>
+        <result property="pname" column="pname"/>
+        <result property="market_price" column="market_price"/>
+        <result property="shop_price" column="shop_price"/>
+        <result property="pimage" column="pimage"/>
+        <result property="pdate" column="pdate"/>
+        <result property="is_hot" column="is_hot"/>
+        <result property="pdesc" column="pdesc"/>
+        <result property="pflag" column="pflag"/>
+        <association property="category" javaType="category">
+            <result property="cid" column="cid"/>
+            <result property="cname" column="cname"/>
+        </association>
+    </resultMap>
+
+<!--    //get all product categories-->
+<!--    public List<Category> findAllCategory();-->
+    <select id="findAllCategory" resultType="Category">
+       SELECT * FROM tab_category ORDER BY cid ASC;
+    </select>
+
+<!--    //get product pagination through cid.-->
+<!--    public Page<Product> findProductByCid(Integer cid);-->
+    <select id="findProductByCid" parameterType="Integer" resultType="Product">
+        SELECT * FROM tab_product WHERE cid = #{cid} AND pflag = 1
+    </select>
+
+<!--    //get product detail via pid-->
+<!--    public Product findProductByPid(Integer pid);-->
+    <select id="findProductByPid" parameterType="integer" resultMap="findProductByPidResultMap">
+        SELECT pid,pname,market_price,shop_price,pimage,pdate,pdesc,tab_category.cid,tab_category.cname
+        FROM tab_product INNER JOIN tab_category
+        ON tab_product.cid = tab_category.cid
+        WHERE pid = ${pid};
+    </select>
+    <resultMap id="findProductByPidResultMap" type="product">
+        <result property="pid" column="pid"/>
+        <result property="pname" column="pname"/>
+        <result property="market_price" column="market_price"/>
+        <result property="shop_price" column="shop_price"/>
+        <result property="pimage" column="pimage"/>
+        <result property="pdate" column="pdate"/>
+        <result property="pdesc" column="pdesc"/>
+        <association property="category" javaType="category">
+            <result property="cid" column="cid"/>
+            <result property="cname" column="cname"/>
+        </association>
+    </resultMap>
+
+</mapper>

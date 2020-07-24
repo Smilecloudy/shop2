@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.it.dao.UserMapper">
+
+<!--    //用户注册-->
+<!--    public void register(User user);-->
+    <insert id="register" parameterType="User">
+        insert into tab_user values(null,#{username},#{password},#{name},#{email},#{telephone},#{birthday},#{sex},#{state},#{code});
+    </insert>
+
+
+<!--    //激活用户-->
+<!--    public void active(String code);-->
+    <update id="active" parameterType="string">
+        update tab_user set state = 'Y' where code = #{code};
+    </update>
+
+<!--    //用户登录-->
+<!--    public void login(User user);-->
+    <select id="login" parameterType="user" resultType="user">
+        SELECT username FROM tab_user
+        WHERE state='Y' AND password=#{password} AND username = #{username};
+    </select>
+
+<!--    //验证用户名是否存在-->
+<!--    public void checkUserName(String username);-->
+    <select id="checkUserName" parameterType="string" resultType="string">
+        SELECT username FROM tab_user WHERE username = #{username};
+    </select>
+</mapper>
